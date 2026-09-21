@@ -1,0 +1,41 @@
+---
+launch:
+  - arg: {name: source_pcd, default: "", description: "Source/local PCD file"}
+  - arg: {name: target_pcd, default: "", description: "Target/global PCD file"}
+  - arg: {name: source_topic, default: "/source_cloud"}
+  - arg: {name: target_topic, default: "/target_cloud"}
+  - arg: {name: source_frame, default: "source_map"}
+  - arg: {name: target_frame, default: "target_map"}
+  - arg: {name: publish_rate, default: "0.0"}
+  - arg: {name: start_rviz, default: "true"}
+
+  - node:
+      pkg: kiss_matcher_localization
+      exec: pcd_pointcloud_publisher
+      name: source_pcd_publisher
+      output: screen
+      param:
+        - {name: pcd_path, value: $(var source_pcd)}
+        - {name: topic, value: $(var source_topic)}
+        - {name: frame_id, value: $(var source_frame)}
+        - {name: publish_rate, value: $(var publish_rate)}
+
+  - node:
+      pkg: kiss_matcher_localization
+      exec: pcd_pointcloud_publisher
+      name: target_pcd_publisher
+      output: screen
+      param:
+        - {name: pcd_path, value: $(var target_pcd)}
+        - {name: topic, value: $(var target_topic)}
+        - {name: frame_id, value: $(var target_frame)}
+        - {name: publish_rate, value: $(var publish_rate)}
+
+  - include:
+      file: $(find-pkg-share kiss_matcher_localization)/launch/inter_frame_alignment.launch.yaml
+      arg:
+        - {name: source_topic, value: $(var source_topic)}
+        - {name: target_topic, value: $(var target_topic)}
+        - {name: source_frame, value: $(var source_frame)}
+        - {name: target_frame, value: $(var target_frame)}
+        - {name: start_rviz, value: $(var start_rviz)}

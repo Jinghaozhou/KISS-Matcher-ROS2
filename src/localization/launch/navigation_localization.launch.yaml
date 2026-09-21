@@ -1,0 +1,22 @@
+---
+launch:
+  - arg: {name: map_pcd, default: $(find-pkg-share kiss_matcher_localization)/maps/3_part.pcd, description: "Global map PCD in map frame"}
+  - arg: {name: local_map_topic, default: "/local_map"}
+  - arg: {name: map_frame, default: "map"}
+  - arg: {name: odom_frame, default: "odom"}
+  - arg: {name: base_frame, default: "base_link"}
+  - arg: {name: config_path, default: $(find-pkg-share kiss_matcher_localization)/config/navigation_localization.yaml}
+  - node:
+      pkg: kiss_matcher_localization
+      exec: navigation_localizer
+      namespace: localization
+      name: navigation_localizer
+      output: screen
+      on_exit: shutdown
+      param:
+        - from: $(var config_path)
+        - {name: map_pcd, value: $(var map_pcd)}
+        - {name: local_map_topic, value: $(var local_map_topic)}
+        - {name: map_frame, value: $(var map_frame)}
+        - {name: odom_frame, value: $(var odom_frame)}
+        - {name: base_frame, value: $(var base_frame)}

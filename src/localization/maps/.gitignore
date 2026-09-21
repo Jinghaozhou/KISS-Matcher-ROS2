@@ -1,0 +1,4 @@
+# Large site maps are deployment data; keep them out of Git history.
+/*.pcd
+/*.ply
+/*.bin

@@ -1,0 +1,33 @@
+---
+launch:
+  - arg: {name: map_pcd, default: "", description: "Optional global map PCD in map frame"}
+  - arg: {name: local_map_topic, default: "/local_map"}
+  - arg: {name: map_frame, default: "map"}
+  - arg: {name: odom_frame, default: "odom"}
+  - arg: {name: map_voxel_resolution, default: "0.2"}
+  - arg: {name: local_voxel_resolution, default: "0.2"}
+  - arg: {name: start_rviz, default: "true"}
+  - arg: {name: rviz_path, default: $(find-pkg-share localization_visualizer)/rviz/localization.rviz}
+
+  - node:
+      pkg: localization_visualizer
+      exec: localization_visualizer_node
+      namespace: localization_visualization
+      name: localization_visualizer
+      output: screen
+      param:
+        - {name: map_pcd, value: $(var map_pcd)}
+        - {name: local_map_topic, value: $(var local_map_topic)}
+        - {name: map_frame, value: $(var map_frame)}
+        - {name: odom_frame, value: $(var odom_frame)}
+        - {name: map_voxel_resolution, value: $(var map_voxel_resolution)}
+        - {name: local_voxel_resolution, value: $(var local_voxel_resolution)}
+
+  - node:
+      if: $(var start_rviz)
+      pkg: rviz2
+      exec: rviz2
+      name: localization_rviz
+      output: screen
+      args: >
+        -d $(var rviz_path)

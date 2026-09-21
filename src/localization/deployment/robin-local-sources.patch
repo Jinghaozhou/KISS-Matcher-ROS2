@@ -1,0 +1,29 @@
+--- a/vendor/robin/cmake/DownloadExternal.cmake
++++ b/vendor/robin/cmake/DownloadExternal.cmake
+@@ -18,6 +18,11 @@
+ # MSVC-aware compile options). Behavior on Linux/macOS is unchanged from
+ # upstream master.
+ function(robin_download_pmc)
++	if(ROBIN_VENDOR_ROOT)
++		set(pmc_SOURCE_DIR "${ROBIN_VENDOR_ROOT}/pmc" PARENT_SCOPE)
++		set(pmc_BINARY_DIR "${CMAKE_CURRENT_BINARY_DIR}/pmc-build" PARENT_SCOPE)
++		return()
++	endif()
+ 	download_project(PROJ pmc
+ 			GIT_REPOSITORY https://github.com/MIT-SPARK/pmc.git
+ 			GIT_TAG        4bbd40ababd8e925c4e1845c509173afe766b443
+@@ -62,11 +67,15 @@
+ 
+ # xenium
+ function(robin_download_xenium)
++	if(ROBIN_VENDOR_ROOT)
++		set(xenium_SOURCE_DIR "${ROBIN_VENDOR_ROOT}/xenium")
++	else()
+ 	download_project(PROJ xenium
+ 			GIT_REPOSITORY https://github.com/mpoeter/xenium
+ 			GIT_TAG        main
+ 			QUIET
+ 			)
++	endif()
+ 	add_library(xenium INTERFACE)
+ 	target_include_directories(xenium

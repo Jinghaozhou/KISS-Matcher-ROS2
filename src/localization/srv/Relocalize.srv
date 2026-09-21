@@ -1,0 +1,5 @@
+# Compute a candidate from the latest /local_map snapshot.
+# When true, apply it if it passes quality and jump thresholds.
+bool apply_if_safe
+---
+kiss_matcher_localization/LocalizationResult result

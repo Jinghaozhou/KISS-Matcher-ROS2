@@ -1,0 +1,10 @@
+.idea/*
+.vscode/*
+.vs/*
+
+doc/latex/*
+doc/html/*
+
+cmake-build-*
+build*
+out/*

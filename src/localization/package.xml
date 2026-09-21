@@ -1,0 +1,32 @@
+<?xml version="1.0"?>
+<package format="3">
+  <name>kiss_matcher_localization</name>
+  <version>0.1.0</version>
+  <description>Coarse-to-fine point cloud localization using KISS Matcher and VGICP</description>
+  <maintainer email="shapelim@mit.edu">Hyungtae Lim</maintainer>
+  <license>MIT</license>
+
+  <buildtool_depend>ament_cmake</buildtool_depend>
+  <buildtool_depend>rosidl_default_generators</buildtool_depend>
+  <exec_depend>rosidl_default_runtime</exec_depend>
+  <member_of_group>rosidl_interface_packages</member_of_group>
+  <depend>builtin_interfaces</depend>
+  <depend>rclcpp</depend>
+  <depend>sensor_msgs</depend>
+  <depend>geometry_msgs</depend>
+  <depend>tf2</depend>
+  <depend>tf2_ros</depend>
+  <depend>pcl_conversions</depend>
+  <depend>libpcl-all-dev</depend>
+  <depend>libeigen3-dev</depend>
+  <depend>libtbb-dev</depend>
+  <depend>libflann-dev</depend>
+  <depend>liblz4-dev</depend>
+  <exec_depend>ros2launch</exec_depend>
+  <exec_depend>launch_ros</exec_depend>
+  <exec_depend>launch_yaml</exec_depend>
+
+  <export>
+    <build_type>ament_cmake</build_type>
+  </export>
+</package>

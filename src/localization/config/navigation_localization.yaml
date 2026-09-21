@@ -1,0 +1,19 @@
+/**:
+  ros__parameters:
+    map_frame: map
+    odom_frame: odom
+    base_frame: base_link
+    local_map_topic: /local_map
+    voxel_resolution: 0.1
+    max_local_map_age_sec: 10.0
+    retry_interval_sec: 5.0
+    periodic_interval_sec: 60.0  # 0 disables periodic relocalization
+    max_auto_translation_m: 1.0
+    max_auto_rotation_deg: 15.0
+    candidate_timeout_sec: 60.0
+    verbose: true
+    min_inliers: 20
+    vgicp_threads: 4
+    vgicp_neighbors: 20
+    vgicp_max_correspondence_scale: 3.0
+    min_overlap_percent: 70.0

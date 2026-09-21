@@ -1,0 +1,26 @@
+/**:
+  ros__parameters:
+    # Keep the PCD demo at a low rate while checking stability.
+    frame_update_hz: 0.1              # One alignment every 10 seconds
+
+    # The local stair cloud spans only a few metres; retain its geometry.
+    voxel_resolution: 0.1
+
+    verbose: true
+    loop:
+      verbose: true
+
+    local_reg:
+      num_threads: 4                  # Number of threads used for local registration
+      correspondences_number: 20      # Minimum number of correspondences required
+      max_num_iter: 64                # Maximum iterations for local registration
+      scale_factor_for_corr_dist: 3.0 # Maximum correspondence distance = 0.3 m
+      # Keep acceptance permissive for the first stable demo run.
+      overlap_threshold: 70.0
+
+    global_reg:
+      enable: true
+      # NOTE(hlim): The best value of `num_inliers_threshold` highly depends on `num_submap_keyframes`
+      # Thus, heuristic tuning is required for the best performance.
+      # Larger values make it more conservative (i.e., higher `num_inliers_threshold` enhances LC precision)
+      num_inliers_threshold: 20       # Minimum inlier count to accept initial alignment

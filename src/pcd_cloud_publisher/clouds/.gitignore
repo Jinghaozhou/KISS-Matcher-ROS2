@@ -1,0 +1,4 @@
+# Large test point clouds are copied as deployment data.
+/*.pcd
+/*.ply
+/*.bin

@@ -1,0 +1,17 @@
+---
+launch:
+  - arg: {name: pcd_path, default: $(find-pkg-share pcd_cloud_publisher)/clouds/part_1_hard.pcd, description: "Local-map PCD to publish"}
+  - arg: {name: topic, default: "/local_map"}
+  - arg: {name: frame_id, default: "odom"}
+  - arg: {name: publish_rate, default: "1.0", description: "Hz; 0 publishes once"}
+
+  - node:
+      pkg: pcd_cloud_publisher
+      exec: pcd_cloud_publisher_node
+      name: local_map_debug_publisher
+      output: screen
+      param:
+        - {name: pcd_path, value: $(var pcd_path)}
+        - {name: topic, value: $(var topic)}
+        - {name: frame_id, value: $(var frame_id)}
+        - {name: publish_rate, value: $(var publish_rate)}

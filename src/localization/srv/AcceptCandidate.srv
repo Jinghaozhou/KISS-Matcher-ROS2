@@ -1,0 +1,4 @@
+# Accept an existing candidate returned by Relocalize or a periodic attempt.
+string candidate_id
+---
+kiss_matcher_localization/LocalizationResult result
