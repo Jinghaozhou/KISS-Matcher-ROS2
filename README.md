@@ -48,26 +48,29 @@ grep -E '^(robin|kiss_matcher|small_gicp)_DIR:' \
 
 ## 3. 使用 PCD 调试输入
 
-每个启动终端都先运行：
+在三个终端分别复制对应的完整命令：
 
 ```bash
 cd /home/pc/kiss_localization_ws
 source /opt/ros/jazzy/setup.bash
 source install/setup.bash
 export LD_LIBRARY_PATH="$PWD/external/lib:${LD_LIBRARY_PATH:-}"
-```
-
-随后在三个终端分别运行：
-
-```bash
 ros2 launch pcd_cloud_publisher local_map_from_pcd.launch.yaml
 ```
 
 ```bash
+cd /home/pc/kiss_localization_ws
+source /opt/ros/jazzy/setup.bash
+source install/setup.bash
+export LD_LIBRARY_PATH="$PWD/external/lib:${LD_LIBRARY_PATH:-}"
 ros2 launch kiss_matcher_localization navigation_localization.launch.yaml
 ```
 
 ```bash
+cd /home/pc/kiss_localization_ws
+source /opt/ros/jazzy/setup.bash
+source install/setup.bash
+export LD_LIBRARY_PATH="$PWD/external/lib:${LD_LIBRARY_PATH:-}"
 ros2 launch localization_visualizer localization_visualizer.launch.yaml \
   map_pcd:="$(ros2 pkg prefix kiss_matcher_localization)/share/kiss_matcher_localization/maps/3_part.pcd"
 ```

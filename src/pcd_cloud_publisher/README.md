@@ -22,8 +22,10 @@ ros2 launch pcd_cloud_publisher local_map_from_pcd.launch.yaml
 
 可通过 `pcd_path`、`topic`、`frame_id`、`publish_rate` 参数更换输入
 文件和发布方式。`publish_rate:=0.0` 只发布一次；调试持续输入时
-保持正值。节点使用 reliable + transient-local QoS，持续发布模式
-可与定位节点的 sensor-data 订阅配合。
+保持正值。持续发布使用 sensor-data QoS（best-effort + volatile），
+与定位节点的订阅一致；单次发布保留 reliable + transient-local QoS，
+使稍后启动的订阅者仍能收到点云。PCD 只在启动时转换为 ROS 消息，
+每次发布更新其时间戳。
 
 另一个终端可启动 `kiss_matcher_localization` 的
 `navigation_localization.launch.yaml`。定位包自行加载全局地图；
