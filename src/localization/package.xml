@@ -3,7 +3,7 @@
   <name>kiss_matcher_localization</name>
   <version>0.1.0</version>
   <description>Coarse-to-fine point cloud localization using KISS Matcher and VGICP</description>
-  <maintainer email="shapelim@mit.edu">Hyungtae Lim</maintainer>
+  <maintainer email="zhoujinghao188@gmail.com">Jinghao</maintainer>
   <license>MIT</license>
 
   <buildtool_depend>ament_cmake</buildtool_depend>

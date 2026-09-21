@@ -3,7 +3,7 @@
   <name>pcd_cloud_publisher</name>
   <version>0.1.0</version>
   <description>Standalone PCD to PointCloud2 publisher for localization input debugging</description>
-  <maintainer email="shapelim@mit.edu">Hyungtae Lim</maintainer>
+  <maintainer email="zhoujinghao188@gmail.com">Jinghao</maintainer>
   <license>MIT</license>
 
   <buildtool_depend>ament_cmake</buildtool_depend>

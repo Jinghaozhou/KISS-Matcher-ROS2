@@ -76,8 +76,7 @@ ros2 launch localization_visualizer localization_visualizer.launch.yaml \
 
 ## 验证状态
 
-五份本地源码已经在 `/tmp/kiss-source-check` 完成算法和三个 ROS 包的
-隔离构建，CMake 未引用旧工作空间安装目录。
-`/home/pc/kiss_localization_ws` 的源码、补丁、脚本、地图和模拟输入
-已就位，但该工作空间尚未运行构建脚本；真实 FastLIO 输入和导航
-系统联调也尚未验证。
+五份本地源码已完成算法和三个 ROS 包的隔离构建；当前
+`/home/pc/kiss_localization_ws` 也已运行构建脚本。三个 ROS 包的安装前缀
+和三个算法库的 CMake 配置均指向本工作空间。PCD 模拟输入下的定位
+服务已有成功匹配记录；真实 FastLIO 输入和导航系统联调尚未验证。

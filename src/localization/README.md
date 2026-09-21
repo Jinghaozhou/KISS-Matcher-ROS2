@@ -29,26 +29,23 @@ KISS Matcher 粗配准与 VGICP 精配准的封装、PCD 演示发布器、配�
 演示时若设置 `start_rviz:=true`，还需安装 `rviz2`；无界面运行可设置
 `start_rviz:=false`。
 
-## 在现有工作空间构建
+## 在独立工作空间构建
 
-当前工作空间已经安装了上述 C++ 库，可直接执行：
+当前工作空间包含算法源码和完整构建脚本。从干净检出开始执行：
 
 ```bash
-cd /home/pc/KISS-Matcher
-source /opt/ros/jazzy/setup.bash
-source install/setup.bash
-colcon build --packages-select kiss_matcher_localization
-source install/setup.bash
+cd /home/pc/kiss_localization_ws
+bash src/localization/deployment/build_from_source.sh
 ```
 
-复制到其他工作空间后，应先 source ROS 2 与外部 C++ 库的安装前缀，
-再执行 `colcon build --packages-select kiss_matcher_localization`。
+复制到其他工作空间后，应先安装算法 C++ 库、source ROS 2 并配置
+算法安装前缀，再执行 `colcon build --packages-select kiss_matcher_localization`。
 不需要复制原工作空间的 SLAM 源码。
 使用默认导航 launch 前，请同时复制所需的 `maps/3_part.pcd`；
 也可通过 launch 的 `map_pcd` 参数指定包外地图。
 
 默认构建类型为 `Release`，以启用定位计算所需的编译优化。若此前已
-构建过旧版本，可重新执行上述 `colcon build`，CMake 会更新缓存中的
+构建过旧版本，可重新执行构建脚本，CMake 会更新缓存中的
 空构建类型；显式指定的 `Debug` 等构建类型仍会保留。
 
 ## 运行

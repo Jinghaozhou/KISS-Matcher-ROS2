@@ -13,9 +13,9 @@ ROS 时间戳，适配定位节点的输入新鲜度检查。PCD 只有 XYZ 时�
 ## 构建和运行
 
 ```bash
-cd /home/pc/KISS-Matcher
+cd /home/pc/kiss_localization_ws
+bash src/localization/deployment/build_from_source.sh
 source /opt/ros/jazzy/setup.bash
-colcon build --packages-select pcd_cloud_publisher
 source install/setup.bash
 ros2 launch pcd_cloud_publisher local_map_from_pcd.launch.yaml
 ```

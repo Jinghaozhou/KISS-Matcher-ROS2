@@ -3,7 +3,7 @@
   <name>localization_visualizer</name>
   <version>0.1.0</version>
   <description>Standalone point cloud overlay and RViz view for map localization</description>
-  <maintainer email="shapelim@mit.edu">Hyungtae Lim</maintainer>
+  <maintainer email="zhoujinghao188@gmail.com">Jinghao</maintainer>
   <license>MIT</license>
 
   <buildtool_depend>ament_cmake</buildtool_depend>

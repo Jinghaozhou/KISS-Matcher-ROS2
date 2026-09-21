@@ -43,10 +43,9 @@ patch -p1 -i src/localization/deployment/robin-local-sources.patch
 安装到 `external/`，最后构建三个 ROS 2 包。系统必须事先安装
 ROS 2 Jazzy、编译工具、PCL、Eigen3、TBB、FLANN、LZ4、OpenMP 等依赖。
 
-同一台机器上已经在 `/tmp/kiss-source-check` 用这五份源码完成了上述构建，
-三个 ROS 包均编译通过。CMake 缓存指向该隔离目录的算法安装前缀，
-未引用旧的 `KISS-Matcher/install`。这项验证还没有在
-`/home/pc/kiss_localization_ws` 本身执行。
+同一台机器上已在 `/tmp/kiss-source-check` 和当前工作空间分别完成构建，
+三个 ROS 包均编译通过。当前工作空间的 CMake 缓存指向本地 `external/`
+中的算法安装前缀，未引用旧的 `KISS-Matcher/install`。
 
 ## 构建后检查
 

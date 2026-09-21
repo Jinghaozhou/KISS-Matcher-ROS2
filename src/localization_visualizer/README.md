@@ -39,7 +39,7 @@ ros2 launch localization_visualizer localization_visualizer.launch.yaml \
 不指定 `map_pcd` 时，仍可显示对齐后的局部地图，但不会发布全局地图。
 
 在当前工作空间根目录，可用
-`map_pcd:="$PWD/localization/maps/3_part.pcd"` 指定已准备好的五号楼地图。
+`map_pcd:="$PWD/src/localization/maps/3_part.pcd"` 指定已准备好的全局地图。
 
 全局地图启动时只读取、体素化一次；随后发布一次，由
 transient-local QoS 保留最后一条消息供稍后启动的 RViz 订阅。

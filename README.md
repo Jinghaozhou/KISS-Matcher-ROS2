@@ -1,8 +1,12 @@
 # KISS Matcher 独立定位工作空间
 
 本目录用于在不依赖 `/home/pc/KISS-Matcher/install` 的条件下，
-从本地算法源码构建定位模块并验证部署。当前源码、点云和构建脚本
-已准备好；**本工作空间尚未执行构建**。
+从本地算法源码构建定位模块并验证部署。当前工作空间已完成源码构建
+和 PCD 模拟输入下的定位服务验证；真实 FastLIO 与导航系统尚未联调。
+
+定位实现参考 [MIT-SPARK/KISS-Matcher](https://github.com/MIT-SPARK/KISS-Matcher)。
+项目自有代码采用 [MIT 许可](LICENSE)；随附算法及第三方源码的来源、
+版权和许可见[第三方声明](THIRD_PARTY_NOTICES.md)。
 
 ## 目录
 
@@ -80,3 +84,6 @@ ros2 launch localization_visualizer localization_visualizer.launch.yaml \
 不运行调试发布器；由 FastLIO 持续发布 `/local_map`（`odom` 坐标系）
 并提供 `odom → base_link`。完整导航接口见
 [导航接口文档](src/localization/NAVIGATION_INTERFACE.md)。
+
+上述两份 PCD 是本机验证数据，已被 Git 忽略；从 GitHub 克隆后需要自行
+提供数据，或通过 launch 参数指定其他 PCD 路径。
