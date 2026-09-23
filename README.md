@@ -1,5 +1,8 @@
 # KISS Matcher 独立定位工作空间
 
+> 本项目是基于 [KISS-Matcher](https://github.com/MIT-SPARK/KISS-Matcher)
+> 开发的独立 ROS 2 定位扩展，不属于 MIT-SPARK 官方项目。
+
 本目录用于在不依赖 `/home/pc/KISS-Matcher/install` 的条件下，
 从本地算法源码构建定位模块并验证部署。当前工作空间已完成源码构建
 和 PCD 模拟输入下的定位服务验证；真实 FastLIO 与导航系统尚未联调。
