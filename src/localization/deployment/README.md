@@ -1,6 +1,6 @@
 # 从源码构建独立工作空间
 
-工作空间根目录为 `/home/pc/kiss_localization_ws`。`src/` 放三个 ROS 2 包，
+在工作空间根目录操作。`src/` 放三个 ROS 2 包，
 `vendor/` 放算法源码，`external/` 是本机从源码编译后生成的安装前缀。
 `vendor/` 和 `external/` 不作为 ROS 包交给 colcon 构建。
 
@@ -22,10 +22,10 @@
 
 ROBIN 原版 CMake 在配置时联网下载 PMC 和 xenium。随附补丁让它使用
 `vendor/` 中已经固定版本的源码，不改变配准算法。**当前
-`/home/pc/kiss_localization_ws/vendor/robin` 已应用补丁**，直接运行：
+`vendor/robin` 已应用补丁**，直接运行：
 
 ```bash
-cd /home/pc/kiss_localization_ws
+# 在工作空间根目录执行
 bash src/localization/deployment/build_from_source.sh
 ```
 
@@ -34,24 +34,26 @@ bash src/localization/deployment/build_from_source.sh
 源码，则先执行一次：
 
 ```bash
-cd /path/to/kiss_localization_ws
+# 在工作空间根目录执行
 patch -p1 -i src/localization/deployment/robin-local-sources.patch
 ```
 
-构建脚本先清除可能继承的旧工作空间 ROS/CMake 环境，再只加载
-`/opt/ros/jazzy`。它依次从源码构建 ROBIN、KISS Matcher、small_gicp，
-安装到 `external/`，最后构建三个 ROS 2 包。系统必须事先安装
-ROS 2 Jazzy、编译工具、PCL、Eigen3、TBB、FLANN、LZ4、OpenMP 等依赖。
+构建脚本先清除可能继承的旧工作空间 ROS/CMake 环境，再加载
+`/opt/ros/humble`。它依次从源码构建 ROBIN、KISS Matcher、small_gicp，
+安装到 `external/`，最后构建三个 ROS 2 包。
+移动工作空间后，应重新生成旧 CMake 构建缓存中的绝对路径。
+系统必须事先安装相应 ROS 2 发行版、CMake ≥ 3.22、编译工具、
+PCL、Eigen3、TBB、FLANN、LZ4、OpenMP 等依赖。
 
-同一台机器上已在 `/tmp/kiss-source-check` 和当前工作空间分别完成构建，
-三个 ROS 包均编译通过。当前工作空间的 CMake 缓存指向本地 `external/`
-中的算法安装前缀，未引用旧的 `KISS-Matcher/install`。
+当前机器的 Humble 构建和 PCD 离线运行已通过。首次定位应用成功，
+43 个内点、99.69% 重叠率；`map → odom` 与可视化对齐点云均已验证。
+后续重定位因调试数据没有 `odom → base_link` 而保留候选结果。
 
 ## 构建后检查
 
 ```bash
-cd /home/pc/kiss_localization_ws
-source /opt/ros/jazzy/setup.bash
+# 在工作空间根目录执行
+source /opt/ros/humble/setup.bash
 source install/setup.bash
 ros2 pkg prefix kiss_matcher_localization
 ros2 pkg prefix pcd_cloud_publisher
@@ -69,8 +71,8 @@ ldd install/kiss_matcher_localization/lib/kiss_matcher_localization/navigation_l
 ## 运行终端
 
 ```bash
-cd /home/pc/kiss_localization_ws
-source /opt/ros/jazzy/setup.bash
+# 在工作空间根目录执行
+source /opt/ros/humble/setup.bash
 source install/setup.bash
 export LD_LIBRARY_PATH="$PWD/external/lib:${LD_LIBRARY_PATH:-}"
 ```

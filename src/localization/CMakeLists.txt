@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.24)
+cmake_minimum_required(VERSION 3.22)
 project(kiss_matcher_localization)
 
 # Keep the standalone package as fast as the original ROS package unless

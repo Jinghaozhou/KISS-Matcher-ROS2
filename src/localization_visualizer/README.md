@@ -18,7 +18,7 @@ transient-local QoS；RViz 配置的固定坐标系为 `map`，全局地图显�
 ## 构建
 
 ```bash
-source /opt/ros/jazzy/setup.bash
+source /opt/ros/humble/setup.bash
 colcon build --packages-select localization_visualizer
 source install/setup.bash
 ```

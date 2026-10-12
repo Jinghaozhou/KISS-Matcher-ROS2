@@ -20,7 +20,7 @@ RViz 中叠加全局地图与定位后的局部地图；它也不属于定位包
 ## 运行
 
 ```bash
-source /opt/ros/jazzy/setup.bash
+source /opt/ros/humble/setup.bash
 source install/setup.bash
 ros2 launch kiss_matcher_localization navigation_localization.launch.yaml \
   local_map_topic:=/local_map

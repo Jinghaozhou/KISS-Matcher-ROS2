@@ -1,6 +1,6 @@
 # 独立工作空间部署
 
-当前独立工作空间位于 `/home/pc/kiss_localization_ws`：
+独立工作空间的目录结构：
 
 ```text
 kiss_localization_ws/
@@ -16,7 +16,7 @@ kiss_localization_ws/
 ROS 包之间没有编译依赖。定位包使用 `external/` 中由本地源码编译的
 `kiss_matcher`、`robin` 和 `small_gicp` C++ 库。
 不要把原工作空间的 `install/setup.bash` 当作目标工作空间的长期依赖。
-目标机器还需 ROS 2 Jazzy、PCL、Eigen3、TBB、FLANN、LZ4 等
+目标机器还需 ROS 2 Humble、CMake ≥ 3.22、PCL、Eigen3、TBB、FLANN、LZ4 等
 依赖；具体名称见各包的 `package.xml`。
 
 跨电脑部署请携带并在目标电脑编译 `vendor/` 中的算法源码，而不是
@@ -38,7 +38,7 @@ ROS 包之间没有编译依赖。定位包使用 `external/` 中由本地源码
 当前工作空间的 ROBIN 本地源码补丁已应用，直接运行：
 
 ```bash
-cd /home/pc/kiss_localization_ws
+# 在工作空间根目录执行
 bash src/localization/deployment/build_from_source.sh
 ```
 
@@ -68,7 +68,7 @@ ros2 launch localization_visualizer localization_visualizer.launch.yaml \
 ```
 
 三个命令在各自终端运行，且每个终端都需先 source
-`/opt/ros/jazzy/setup.bash` 与新工作空间的 `install/setup.bash`，
+`/opt/ros/humble/setup.bash` 与新工作空间的 `install/setup.bash`，
 并设置 `LD_LIBRARY_PATH` 指向新工作空间的 `external/lib`；完整命令见
 [运行终端](deployment/README.md#运行终端)。接入真实 FastLIO 后关闭模拟 PCD 发布器，
 由 FastLIO 提供 `/local_map` 和 `odom -> base_link`。定位节点独占
@@ -76,7 +76,7 @@ ros2 launch localization_visualizer localization_visualizer.launch.yaml \
 
 ## 验证状态
 
-五份本地源码已完成算法和三个 ROS 包的隔离构建；当前
-`/home/pc/kiss_localization_ws` 也已运行构建脚本。三个 ROS 包的安装前缀
-和三个算法库的 CMake 配置均指向本工作空间。PCD 模拟输入下的定位
-服务已有成功匹配记录；真实 FastLIO 输入和导航系统联调尚未验证。
+当前机器的 Humble 构建和 PCD 离线定位已通过：首次定位应用成功，
+`map → odom` 与可视化对齐点云均已发布。调试数据没有 `odom → base_link`，
+因此后续重定位的候选结果不会自动应用；真实 FastLIO 输入和导航系统
+联调尚未验证。

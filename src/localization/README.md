@@ -1,69 +1,92 @@
 # KISS Matcher 点云定位 ROS 2 包
 
-本目录是独立的 `kiss_matcher_localization` 功能包。它包含定位节点、
-KISS Matcher 粗配准与 VGICP 精配准的封装、PCD 演示发布器、配置和 RViz
-文件。源码没有引用上级工作空间的 `ros/` 或 `cpp/` 路径；复制本目录
-到其他 ROS 2 工作空间的 `src/` 后仍可构建。
-三个包一起迁移时的目录布局与构建命令见[独立部署说明](DEPLOYMENT.md)。
+`kiss_matcher_localization` 将 `odom` 坐标系中的局部点云与 `map` 坐标系中的
+全局 PCD 地图配准，计算并发布 `map → odom`。配准先使用 KISS Matcher
+寻找初始位姿，再使用 VGICP 精配准，并按内点数和重叠率检查结果。
 
-全局地图放在 [`maps/`](maps/README.md)。本机的 `3_part.pcd` 已放入该
-目录，构建时会安装到功能包的 share 目录；地图文件较大，默认不纳入 Git。
-模拟持续局部地图输入的节点放在独立的
-[`pcd_cloud_publisher`](../pcd_cloud_publisher/README.md) 包中。
-点云叠加和 RViz 放在独立的
-[`localization_visualizer`](../localization_visualizer/README.md) 包中。
+包内有两个运行入口：`navigation_localizer` 用于持续定位和重定位服务；
+`inter_frame_alignment` 用于两路点云之间的配准演示。导航定位时启动前者。
 
-## 构建依赖
+## 输入与输出
 
-- ROS 2 Jazzy：`ament_cmake`、`rclcpp`、`sensor_msgs`、
-  `geometry_msgs`、`tf2`、`tf2_ros`、`pcl_conversions`，以及用于
-  导航服务和状态消息的 `rosidl_default_generators`。
-- PCL（common、filters、io）以及 Eigen3、TBB、FLANN、LZ4。
-- 已安装并可被 CMake 找到的 `kiss_matcher`、`robin` 和 `small_gicp`。
-  这三者是外部 C++ 库，需在构建本包前安装；本包不会在构建过程中
-  从网络下载源码。若装在非标准前缀，请将其前缀加入 `CMAKE_PREFIX_PATH`。
+| 项目 | 默认值或行为 |
+| --- | --- |
+| 全局地图 | `maps/3_part.pcd`，点坐标位于 `map` 坐标系；启动时加载并体素化 |
+| 局部地图 | `/local_map`，`sensor_msgs/msg/PointCloud2`；点坐标和 `header.frame_id` 均为 `odom` |
+| 定位变换 | 首次成功应用后发布 `map → odom` TF |
+| 定位状态 | `/localization/status`，消息类型为 `kiss_matcher_localization/msg/LocalizationResult` |
+| 手动重定位 | `/localization/relocalize` 服务 |
+| 候选确认 | `/localization/accept_candidate` 服务 |
 
-本包不依赖 SLAM 位姿图、GTSAM 或原来的 `kiss_matcher_ros` 包。
-算法封装当前仍使用 ROS 日志类型；它是包内实现，并未承诺独立的
-无 ROS C++ API。
-演示时若设置 `start_rviz:=true`，还需安装 `rviz2`；无界面运行可设置
-`start_rviz:=false`。
+默认地图文件放在 [`maps/`](maps/README.md)。PCD 数据不随 Git 仓库分发；
+也可以在启动时用 `map_pcd` 指定其他地图。参数默认值见
+[`config/navigation_localization.yaml`](config/navigation_localization.yaml)，
+服务、状态字段和 TF 更新规则见[导航接口说明](NAVIGATION_INTERFACE.md)。
 
-## 在独立工作空间构建
+## 构建
 
-当前工作空间包含算法源码和完整构建脚本。从干净检出开始执行：
+需要 ROS 2 Humble、CMake ≥ 3.22、colcon、PCL、Eigen3、TBB、FLANN、LZ4，
+以及 `robin`、`kiss_matcher`、`small_gicp` 算法库。当前工作空间包含算法
+源码，在工作空间根目录运行：
 
 ```bash
-cd /home/pc/kiss_localization_ws
 bash src/localization/deployment/build_from_source.sh
 ```
 
-复制到其他工作空间后，应先安装算法 C++ 库、source ROS 2 并配置
-算法安装前缀，再执行 `colcon build --packages-select kiss_matcher_localization`。
-不需要复制原工作空间的 SLAM 源码。
-使用默认导航 launch 前，请同时复制所需的 `maps/3_part.pcd`；
-也可通过 launch 的 `map_pcd` 参数指定包外地图。
+脚本依次构建算法库和本包、`pcd_cloud_publisher`、
+`localization_visualizer` 三个 ROS 包。算法库安装在 `external/`，
+ROS 包安装在 `install/`。详细构建依赖和检查方法见
+[从源码构建说明](deployment/README.md)。
 
-默认构建类型为 `Release`，以启用定位计算所需的编译优化。若此前已
-构建过旧版本，可重新执行构建脚本，CMake 会更新缓存中的
-空构建类型；显式指定的 `Debug` 等构建类型仍会保留。
+## 运行导航定位
 
-## 运行
+在工作空间根目录执行：
 
-演示入口默认打开 RViz：
+```bash
+source /opt/ros/humble/setup.bash
+source install/setup.bash
+export LD_LIBRARY_PATH="$PWD/external/lib:${LD_LIBRARY_PATH:-}"
+ros2 launch kiss_matcher_localization navigation_localization.launch.yaml
+```
+
+节点收到有效的 `/local_map` 后自动尝试首次定位，成功后按配置周期重新定位。
+使用其他地图时添加 `map_pcd:=/absolute/path/to/map.pcd`。局部地图可由实际
+里程计系统提供；用 PCD 做离线测试时，可启动
+[`pcd_cloud_publisher`](../pcd_cloud_publisher/README.md) 发布测试点云，并用
+[`localization_visualizer`](../localization_visualizer/README.md) 查看对齐结果。
+完整的三包启动命令见[工作空间 README](../../README.md#3-使用-pcd-调试输入)。
+
+检查定位结果：
+
+```bash
+ros2 topic echo /localization/status
+ros2 run tf2_ros tf2_echo map odom
+```
+
+手动请求一次重定位：
+
+```bash
+ros2 service call /localization/relocalize \
+  kiss_matcher_localization/srv/Relocalize \
+  "{apply_if_safe: true}"
+```
+
+首次匹配通过质量检查后可以直接应用。已有定位时，若缺少
+`odom → base_link`，节点无法比较新旧机器人位姿，会保留匹配结果作为候选，
+而不会自动更新 `map → odom`；候选可通过 `accept_candidate` 服务确认。
+
+## 两路点云配准演示
+
+`pcd_inter_frame_demo.launch.yaml` 使用包内的 PCD 发布器读取两份文件，
+启动 `inter_frame_alignment`，默认打开 RViz：
 
 ```bash
 ros2 launch kiss_matcher_localization pcd_inter_frame_demo.launch.yaml \
-  source_pcd:=/path/to/local.pcd \
-  target_pcd:=/path/to/map.pcd
+  source_pcd:=/absolute/path/to/local.pcd \
+  target_pcd:=/absolute/path/to/map.pcd
 ```
 
-接入已有点云话题时使用 `inter_frame_alignment.launch.yaml`，可设置
-`source_topic`、`target_topic`、`source_frame`、`target_frame`、
-`config_path` 和 `start_rviz`。两路输入为 `sensor_msgs/msg/PointCloud2`。
-该演示入口仍沿用演示版的 TF 与 `reg/*` 可视化话题；导航系统所需的
-`map -> odom`、位姿状态和失败有效期接口由独立的
-[`navigation_localizer`](NAVIGATION_INTERFACE.md) 入口提供。
-
-原 `kiss_matcher_ros` 包中的同名演示入口暂时保留，已有运行命令仍可用。
-后续修改定位算法时应以本目录为准，待导航接口稳定后移除旧实现。
+已有点云话题可使用 `inter_frame_alignment.launch.yaml`，设置
+`source_topic`、`target_topic`、`source_frame` 和 `target_frame`。
+无图形界面时添加 `start_rviz:=false`。该演示入口与导航定位入口的 TF
+用途不同；导航定位使用 `navigation_localization.launch.yaml`。

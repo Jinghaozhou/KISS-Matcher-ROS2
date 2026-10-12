@@ -6,5 +6,6 @@
 # C++ algorithm build outputs and installed libraries
 /build_algorithms/
 /external/
+/.build_backup/
 
 # Map and debug point clouds are excluded by their directory .gitignore files.

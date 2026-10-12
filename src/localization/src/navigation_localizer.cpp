@@ -125,6 +125,8 @@ class NavigationLocalizer : public rclcpp::Node {
     tf_buffer_ = std::make_unique<tf2_ros::Buffer>(get_clock());
     tf_listener_ = std::make_unique<tf2_ros::TransformListener>(*tf_buffer_);
 
+    const auto service_qos = rmw_qos_profile_services_default;
+
     relocalize_service_ = create_service<Relocalize>(
         "relocalize",
         [this](const std::shared_ptr<Relocalize::Request> request,
@@ -134,7 +136,7 @@ class NavigationLocalizer : public rclcpp::Node {
           response->result.completed_stamp = get_clock()->now();
           status_pub_->publish(response->result);
         },
-        rclcpp::ServicesQoS(), registration_group_);
+        service_qos, registration_group_);
 
     accept_service_ = create_service<AcceptCandidate>(
         "accept_candidate",
@@ -144,7 +146,7 @@ class NavigationLocalizer : public rclcpp::Node {
           response->result.completed_stamp = get_clock()->now();
           status_pub_->publish(response->result);
         },
-        rclcpp::ServicesQoS(), registration_group_);
+        service_qos, registration_group_);
 
     trigger_timer_ = create_wall_timer(
         std::chrono::seconds(1), [this]() { triggerAutomatically(); }, registration_group_);
